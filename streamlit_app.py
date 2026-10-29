@@ -3,7 +3,7 @@ import streamlit as st
 
 st.set_page_config(page_title="CAMPUS 360° · VIT-AP", page_icon="🏛️", layout="wide")
 ROOT = Path(__file__).parent
-PANORAMA = ROOT / "static" / "panoramas" / "sample-360.jpg"
+PANORAMA = ROOT / "static" / "panoramas" / "sample-360.png"
 st.markdown("""<style>
 .stApp{background:#07111c;color:#eef5fb}.hero{padding:3rem 1rem;border:1px solid #1b3548;border-radius:24px;background:radial-gradient(circle at 82% 25%,#173c50,#0c1e2c 45%,#091522)}
 .eyebrow{color:#51d6c0;letter-spacing:.18em;font-size:.8rem;font-weight:700}.hero h1{color:#f4f8fb;font-size:clamp(2.5rem,6vw,5rem);line-height:1.05}.hero p{color:#b7c9d6;font-size:1.08rem;max-width:40rem}
@@ -54,7 +54,7 @@ elif page=="panorama":
  st.markdown(f"## 360° View · P{i}")
  st.caption("Explore the sample campus panorama.")
  if PANORAMA.exists(): st.image(str(PANORAMA),use_container_width=True)
- else: st.error("Panorama image is missing from static/panoramas/sample-360.jpg.")
+ else: st.error("Panorama image is missing from static/panoramas/sample-360.png.")
  a,b,c=st.columns([1,2,1])
  with a:
   if i>1 and st.button("← Previous"): st.session_state.point=i-1; st.rerun()
