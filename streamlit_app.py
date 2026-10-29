@@ -1,28 +1,32 @@
+import base64
 from pathlib import Path
-import shutil
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 ROOT = Path(__file__).parent
 DIST = ROOT / "campus360_fixed2" / "dist"
-STATIC = ROOT / "static"
 
 st.set_page_config(page_title="CAMPUS 360° · VIT-AP", layout="wide")
 
 if not (DIST / "index.html").exists():
-    st.error("The web app has not been built yet. Follow the build steps in README.md.")
+    st.error("The web app build is missing. Check campus360_fixed2/dist in the repository.")
     st.stop()
 
-shutil.copytree(DIST, STATIC, dirs_exist_ok=True)
-
-st.markdown(
-    """
-    <style>
-      [data-testid="stAppViewContainer"] { padding: 0; }
-      [data-testid="stHeader"], footer { display: none; }
-      .campus-frame { width: 100%; height: calc(100vh - 2rem); min-height: 700px; border: 0; }
-    </style>
-    <iframe class="campus-frame" title="CAMPUS 360° VIT-AP" src="/app/static/index.html" allow="fullscreen"></iframe>
-    """,
-    unsafe_allow_html=True,
+js_file = next((DIST / "assets").glob("*.js"))
+css_file = next((DIST / "assets").glob("*.css"))
+js = js_file.read_text(encoding="utf-8")
+css = css_file.read_text(encoding="utf-8")
+panorama = DIST / "panoramas" / "sample-360.jpg"
+panorama_data = base64.b64encode(panorama.read_bytes()).decode("ascii")
+js = js.replace(
+    "./panoramas/sample-360.jpg",
+    f"data:image/jpeg;base64,{panorama_data}",
 )
+
+page = f"""<!doctype html>
+<html lang=\"en\">
+<head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><style>{css}html,body,#root{{margin:0;min-height:100%;width:100%;}}</style></head>
+<body><div id=\"root\"></div><script type=\"module\">{js}</script></body>
+</html>"""
+components.html(page, height=1000, scrolling=True)
