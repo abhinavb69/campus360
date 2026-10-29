@@ -1,4 +1,5 @@
 import base64
+import re
 from pathlib import Path
 
 import streamlit as st
@@ -9,14 +10,16 @@ DIST = ROOT / "campus360_fixed2" / "dist"
 
 st.set_page_config(page_title="CAMPUS 360° · VIT-AP", layout="wide")
 
-if not (DIST / "index.html").exists():
+index_path = DIST / "index.html"
+if not index_path.exists():
     st.error("The web app build is missing. Check campus360_fixed2/dist in the repository.")
     st.stop()
 
-js_file = next((DIST / "assets").glob("*.js"))
-css_file = next((DIST / "assets").glob("*.css"))
-js = js_file.read_text(encoding="utf-8")
-css = css_file.read_text(encoding="utf-8")
+index_html = index_path.read_text(encoding="utf-8")
+js_name = re.search(r'src="\./assets/([^"]+\.js)"', index_html).group(1)
+css_name = re.search(r'href="\./assets/([^"]+\.css)"', index_html).group(1)
+js = (DIST / "assets" / js_name).read_text(encoding="utf-8")
+css = (DIST / "assets" / css_name).read_text(encoding="utf-8")
 panorama = DIST / "panoramas" / "sample-360.jpg"
 panorama_data = base64.b64encode(panorama.read_bytes()).decode("ascii")
 js = js.replace(
