@@ -13,7 +13,6 @@ if not (DIST / "index.html").exists():
     st.error("The web app has not been built yet. Follow the build steps in README.md.")
     st.stop()
 
-# Copy the bundled frontend to Streamlit's documented static-file directory.
 shutil.copytree(DIST, STATIC, dirs_exist_ok=True)
 
 st.markdown(
@@ -23,7 +22,7 @@ st.markdown(
       [data-testid="stHeader"], footer { display: none; }
       .campus-frame { width: 100%; height: calc(100vh - 2rem); min-height: 700px; border: 0; }
     </style>
-    <iframe class="campus-frame" title="CAMPUS 360° VIT-AP" src="/app/static/" allow="fullscreen"></iframe>
+    <iframe class="campus-frame" title="CAMPUS 360° VIT-AP" src="/app/static/index.html" allow="fullscreen"></iframe>
     """,
     unsafe_allow_html=True,
 )
